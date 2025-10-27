@@ -1,6 +1,6 @@
-import CreateAccountForm from "../components/CreateAccountForm";
-import Footer from "../layout/Footer";
-import Header from "../layout/Header";
+import CreateAccountForm from "../../components/CreateAccountForm";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
 const CreateAccount = () => {
   return (
     <main>

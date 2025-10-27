@@ -1,7 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [user, navigate]);
+
+  // Get initials from user email or name
+  const getInitials = (email: string) => {
+    const namePart = email.split("@")[0];
+    return (
+      namePart
+        .split(".")
+        .map((n) => n[0]?.toUpperCase())
+        .join("") || email[0]?.toUpperCase()
+    );
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-[#F9FAFB] font-[Poppins] text-[#101828]">
@@ -10,37 +30,40 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <span className="material-symbols-outlined text-[#7F56D9] text-3xl">
-                webhook
+                confirmation_number
               </span>
-              <h1 className="text-xl font-bold">Supportify</h1>
-            </div>
+              <h1 className="text-xl font-bold">TicketFlow</h1>
+            </Link>
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-6">
               <nav className="flex items-center gap-4">
-                <a
-                  href="#"
+                <Link
+                  to="/manage-ticket"
                   className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#7F56D9]/10 text-[#7F56D9] font-medium"
                 >
                   <span className="material-symbols-outlined">
                     confirmation_number
                   </span>
                   <span>Ticket Management</span>
-                </a>
+                </Link>
               </nav>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#D0D5DD] flex items-center justify-center font-bold text-white">
-                  JD
+                <div className="w-10 h-10 rounded-full bg-[#7F56D9] flex items-center justify-center font-bold text-white">
+                  {user ? getInitials(user) : "?"}
                 </div>
                 <div className="flex flex-col">
-                  <p className="font-medium">John Doe</p>
+                  <p className="font-medium">{user || "User"}</p>
                 </div>
               </div>
 
-              <button className="flex items-center justify-center rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors">
+              <button
+                onClick={logout}
+                className="flex items-center justify-center rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors"
+              >
                 Logout
               </button>
             </div>
@@ -61,26 +84,29 @@ export default function Dashboard() {
         {menuOpen && (
           <div className="bg-[#F9FAFB] border-t border-[#D0D5DD]/50 md:hidden">
             <div className="px-4 pt-3 pb-4 space-y-3">
-              <a
-                href="#"
+              <Link
+                to="/manage-ticket"
                 className="flex items-center gap-2 px-3 py-2 rounded-2xl text-base font-medium text-[#7F56D9] bg-[#7F56D9]/10"
               >
                 <span className="material-symbols-outlined">
                   confirmation_number
                 </span>
                 Ticket Management
-              </a>
+              </Link>
 
               <div className="border-t border-[#D0D5DD]/40 my-3"></div>
 
               <div className="flex items-center gap-3 px-3 py-2">
-                <div className="w-10 h-10 rounded-full bg-[#D0D5DD] flex items-center justify-center font-bold text-white">
-                  JD
+                <div className="w-10 h-10 rounded-full bg-[#7F56D9] flex items-center justify-center font-bold text-white">
+                  {user ? getInitials(user) : "?"}
                 </div>
-                <p className="font-medium">John Doe</p>
+                <p className="font-medium">{user || "User"}</p>
               </div>
 
-              <button className="w-full flex items-center justify-center rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors">
+              <button
+                onClick={logout}
+                className="w-full flex items-center justify-center rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors"
+              >
                 Logout
               </button>
             </div>
@@ -89,7 +115,7 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow">
+      <main>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -98,21 +124,9 @@ export default function Dashboard() {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              {
-                title: "Total Tickets",
-                value: "1,250",
-                icon: "inbox",
-              },
-              {
-                title: "Open Tickets",
-                value: "823",
-                icon: "draft",
-              },
-              {
-                title: "Resolved Tickets",
-                value: "427",
-                icon: "task_alt",
-              },
+              { title: "Total Tickets", value: "1,250", icon: "inbox" },
+              { title: "Open Tickets", value: "823", icon: "draft" },
+              { title: "Resolved Tickets", value: "427", icon: "task_alt" },
             ].map((card, index) => (
               <div
                 key={index}
@@ -136,7 +150,7 @@ export default function Dashboard() {
       {/* Footer */}
       <footer className="bg-[#F9FAFB] mt-auto border-t border-[#D0D5DD]/40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-[#98A2B3]">
-          © 2025 Supportify. All rights reserved.
+          © 2025 TicketFlow. All rights reserved.
         </div>
       </footer>
     </div>

@@ -1,10 +1,20 @@
-import React, { useState } from "react";
-import {tickets} from "../constants/Data";
+import React, { useState, useEffect } from "react";
+import { tickets } from "../constants/Data";
+import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+
 const ManageTickets: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
- 
+  // Protect route: redirect if not authenticated
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -24,15 +34,62 @@ const ManageTickets: React.FC = () => {
     setShowDeleteModal(true);
   };
 
+  // Extract initials from email or name
+  const getInitials = (email: string | null) => {
+    if (!email) return "U";
+    const namePart = email.split("@")[0];
+    return namePart
+      .split(".")
+      .map((n) => n[0]?.toUpperCase())
+      .join("")
+      .slice(0, 2);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-[Poppins]">
+      {/* Header Section */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <Link to="/" className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-[#7F56D9] text-3xl">
+              confirmation_number
+            </span>
+            <h1 className="text-xl font-bold">TicketFlow</h1>
+          </Link>
+          <div className="flex items-center gap-4">
+            {/* User Avatar */}
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 flex items-center justify-center bg-violet-600 text-white rounded-full font-semibold">
+                {getInitials(user)}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-gray-800">
+                  {user}
+                </span>
+              </div>
+            </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={logout}
+              className="ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Section */}
       <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Ticket Management
-          </h1>
-          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg shadow hover:bg-violet-700 transition-colors">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Manage Your Tickets
+          </h2>
+          <button
+            onClick={() => navigate("/create-ticket")}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg shadow hover:bg-violet-700 transition-colors"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="24px"
@@ -55,9 +112,9 @@ const ManageTickets: React.FC = () => {
             >
               <div>
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  <h3 className="text-xl font-semibold text-gray-900">
                     {ticket.title}
-                  </h2>
+                  </h3>
                   <span
                     className={`px-3 py-1 text-sm font-semibold text-white rounded-full ${getStatusColor(
                       ticket.status
@@ -70,34 +127,30 @@ const ManageTickets: React.FC = () => {
               </div>
               <div className="flex justify-end gap-3">
                 <button className="flex items-center justify-center gap-1 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors">
-                  <span className="">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#165eca"
-                    >
-                      <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-                    </svg>
-                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20px"
+                    viewBox="0 -960 960 960"
+                    width="20px"
+                    fill="#165eca"
+                  >
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                  </svg>
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(ticket.id)}
                   className="flex items-center justify-center gap-1 px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-lg hover:bg-red-200 transition-colors"
                 >
-                  <span className="material-symbols-outlined text-base">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#EA3323"
-                    >
-                      <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                    </svg>
-                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20px"
+                    viewBox="0 -960 960 960"
+                    width="20px"
+                    fill="#EA3323"
+                  >
+                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360Z" />
+                  </svg>
                   Delete
                 </button>
               </div>
@@ -112,7 +165,7 @@ const ManageTickets: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-lg p-8 max-w-sm w-full">
             <div className="text-center">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                <span className="material-symbols-outlined text-red-600">
+                <span className="text-red-600 material-symbols-outlined">
                   warning
                 </span>
               </div>

@@ -1,15 +1,37 @@
 import React, { useState } from "react";
-import type { FormEvent } from "react";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import Toast from "../components/Toast"
+
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
+const { login } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+const [error, setError] = useState<string>("");
+const [toast, setToast] = useState<{message:string, type: "error" | "success"} | null>(null);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    if(!email.trim() || !password.trim()) {
+      setError("Email and password are required.");
+      setToast({message: "Please fill in all fields.", type: "error"});
+      return;
+    }
+    try {
+      await login(email, password);
+      setToast({message: "Login successful!", type: "success"});
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+    } catch (err: any) {
+      const msg = err?.message || "Invalid credentials. Please try again.";
+      setError(msg);
+      setToast({message: msg, type: "error"});
+    }
+   
   };
 
   return (
@@ -51,6 +73,9 @@ const LoginForm: React.FC = () => {
                 className="w-full border border-gray-300 rounded-lg py-3 pl-12 pr-3 text-[#333333] placeholder:text-gray-400 focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/40 transition"
               />
             </div>
+            {error && !email && (
+              <p className="text-sm text-red-500 mt-1">Email is required.</p>
+            )}
           </div>
 
           {/* Password Field */}
@@ -111,6 +136,9 @@ const LoginForm: React.FC = () => {
                 )}
               </button>
             </div>
+            {error && !password && (
+              <p className="text-sm text-red-500 mt-1">Password is required.</p>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -137,6 +165,13 @@ const LoginForm: React.FC = () => {
           </p>
         </div>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 };

@@ -44,7 +44,7 @@ const Hero: React.FC = () => {
           <Link to="create-account" className="w-full sm:w-auto flex items-center cursor-pointer justify-center rounded-2xl h-12 px-8 bg-indigo-600 text-white text-base font-bold shadow-lg hover:bg-indigo-500 transition-all transform hover:scale-105">
             Get Started
           </Link>
-          <Link to="login" className="w-full sm:w-auto flex items-center cursor-pointer justify-center rounded-2xl h-12 px-8 bg-indigo-200 text-indigo-700 font-bold shadow-lg hover:bg-indigo-300 transition-all transform hover:scale-105">
+          <Link to="/login" className="w-full sm:w-auto flex items-center cursor-pointer justify-center rounded-2xl h-12 px-8 bg-indigo-200 text-indigo-700 font-bold shadow-lg hover:bg-indigo-300 transition-all transform hover:scale-105">
             Login
           </Link>
         </div>
