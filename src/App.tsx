@@ -6,6 +6,7 @@ import CreateTicket from "./pages/CreateTicket";
 import Dashboard from "./pages/Dashboard";
 import ManageTicket from "./pages/ManageTicket";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
   return (
     <Routes>
@@ -36,6 +37,15 @@ function App() {
         element={
           <ProtectedRoute>
             <ManageTicket />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/edit-ticket/:id"
+        element={
+          <ProtectedRoute>
+            <CreateTicket />
           </ProtectedRoute>
         }
       />

@@ -1,63 +1,69 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
-import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { createContext, useContext, useState, useEffect } from "react";
+
+interface User {
+  email: string;
+  password: string;
+}
 
 interface AuthContextType {
-  user: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  user: User | null;
+  login: (email: string, password: string) => void;
+  signup: (email: string, password: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
-  const navigate = useNavigate();
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [user, setUser] = useState<User | null>(null);
 
+  // ✅ Load saved session from localStorage safely
   useEffect(() => {
-    const session = localStorage.getItem("ticketapp_session");
-    if (session) setUser(session);
+    const storedUser = localStorage.getItem("ticketapp_session");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        // Ensure parsed data has expected structure
+        if (parsed && parsed.email && parsed.password) {
+          setUser(parsed);
+        } else if (typeof storedUser === "string") {
+          // fallback for legacy plain string sessions
+          setUser({ email: storedUser, password: "" });
+        }
+      } catch {
+        // fallback if not valid JSON (from older sessions)
+        setUser({ email: storedUser, password: "" });
+      }
+    }
   }, []);
 
-  const login = async (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const existingUser = users.find(
-      (u: { email: string; password: string }) =>
-        u.email === email && u.password === password
-    );
+  // ✅ Login user and persist session
+  const login = (email: string, password: string) => {
+    const savedUser = localStorage.getItem("ticketapp_user");
+    if (!savedUser) throw new Error("User not found");
 
-    if (!existingUser) throw new Error("Invalid credentials");
+    const parsed = JSON.parse(savedUser);
+    if (parsed.email !== email || parsed.password !== password)
+      throw new Error("Invalid credentials");
 
-    localStorage.setItem("ticketapp_session", email);
-    setUser(email);
-    navigate("/dashboard");
+    localStorage.setItem("ticketapp_session", JSON.stringify(parsed));
+    setUser(parsed);
   };
 
-  const signup = async (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-
-    const existingUser = users.find(
-      (u: { email: string }) => u.email === email
-    );
-    if (existingUser) throw new Error("User already exists");
-
-    users.push({ email, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("ticketapp_session", email);
-    setUser(email);
-    navigate("/dashboard");
+  // ✅ Signup new user
+  const signup = (email: string, password: string) => {
+    const newUser = { email, password };
+    localStorage.setItem("ticketapp_user", JSON.stringify(newUser));
+    localStorage.setItem("ticketapp_session", JSON.stringify(newUser));
+    setUser(newUser);
   };
 
+  // ✅ Logout: only remove session (tickets remain)
   const logout = () => {
-    localStorage.removeItem("ticketapp_session");
     setUser(null);
-    navigate("/login");
+    localStorage.removeItem("ticketapp_session");
   };
 
   return (
@@ -67,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;

@@ -4,22 +4,8 @@ const Hero: React.FC = () => {
   return (
     <section className="relative bg-[#F3F4F6] pt-20 pb-28 overflow-hidden font-[Poppins]">
       {/* === Decorative background circles === */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute bottom-0 left-0 w-full h-full bg-no-repeat bg-bottom"
-          style={{
-            backgroundImage:
-              "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDoq56RIK-16f7uBOzxAPo7nelCQZHoLOoRbUkyprLLkAJPXPkBP6QhJSu1zc4H-CohZCYemhqQRluEGpeZan88U_fnInSaRAAK5hl48ocMJ1fc04oETaw3AL5pmOIDSDF65AYdXbFEPFCOgKEcc9wbqV5evO8Qmk3R0y14YwWRTgTOOMcIcmaU1RB2HCrZrdUGkHO_64j8ngH98z6w6tNYWkOkF0_lYv2F_eXP_pEu2SNhgeSuHnOrre7BMyoKEJguHxrvBXPGmFgn')",
-          }}
-        ></div>
-        <div
-          className="absolute top-0 right-0 w-full h-full bg-no-repeat bg-top rotate-180"
-          style={{
-            backgroundImage:
-              "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDoq56RIK-16f7uBOzxAPo7nelCQZHoLOoRbUkyprLLkAJPXPkBP6QhJSu1zc4H-CohZCYemhqQRluEGpeZan88U_fnInSaRAAK5hl48ocMJ1fc04oETaw3AL5pmOIDSDF65AYdXbFEPFCOgKEcc9wbqV5evO8Qmk3R0y14YwWRTgTOOMcIcmaU1RB2HCrZrdUGkHO_64j8ngH98z6w6tNYWkOkF0_lYv2F_eXP_pEu2SNhgeSuHnOrre7BMyoKEJguHxrvBXPGmFgn')",
-          }}
-        ></div>
-      </div>
+     
+      
 
       {/* Floating circles */}
       <div className="absolute top-1/4 left-1/4 w-20 h-20 md:w-24 md:h-24 bg-indigo-300 rounded-full opacity-30 animate-pulse"></div>

@@ -35,14 +35,19 @@ const [toast, setToast] = useState<{message:string, type: "error" | "success"} |
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5] font-[Poppins] px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen flex items-center justify-center bg-[#F5F5F5] font-[Poppins] px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] p-8 space-y-6">
         {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[#333333]">Welcome Back!</h1>
           <p className="text-gray-500 mt-2">Log in to your account</p>
         </div>
-
+        {/* Floating circles */}
+        <div className="absolute z-0 top-1/4 left-24 w-20 h-20 md:w-24 md:h-24 bg-indigo-300 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute  bottom-1/3 right-1/8 w-28 h-28 md:w-36 md:h-36 bg-indigo-500 rounded-full opacity-20 animate-[pulse_5s_infinite]"></div>
+        <div className="absolute top-1/2 left-1/5 w-10 h-10 md:w-12 md:h-12 bg-indigo-300 rounded-full opacity-40 animate-pulse"></div>
+        <div className="absolute top-20 right-10 md:right-40 w-16 h-16 md:w-20 md:h-20 bg-indigo-500 rounded-full opacity-20"></div>
+        <div className="absolute bottom-10 left-8 md:left-32 w-24 h-24 md:w-28 md:h-28 bg-indigo-300 rounded-full opacity-30"></div>
         {/* Login Form */}
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Email Field */}
