@@ -32,7 +32,7 @@ export default function Dashboard() {
     setLoading(false);
   }, []);
 
-  // Compute stats
+  // Stats
   const totalTickets = tickets.length;
   const openTickets = tickets.filter((t) => t.status === "open").length;
   const resolvedTickets = tickets.filter((t) => t.status === "closed").length;
@@ -63,45 +63,39 @@ export default function Dashboard() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
-              <nav className="flex items-center gap-4">
-                <Link
-                  to="/manage-ticket"
-                  className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#7F56D9]/10 text-[#7F56D9] font-medium"
-                >
-                  <span className="material-symbols-outlined">
-                    confirmation_number
-                  </span>
-                  <span>Ticket Management</span>
-                </Link>
-              </nav>
+              <Link
+                to="/manage-ticket"
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#7F56D9]/10 text-[#7F56D9] font-medium"
+              >
+                <span className="material-symbols-outlined">
+                  confirmation_number
+                </span>
+                <span>Ticket Management</span>
+              </Link>
 
               {/* User Avatar + Logout */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#7F56D9] flex items-center justify-center font-bold text-white">
                   {user?.email ? getInitials(user.email) : "?"}
                 </div>
-                <div className="flex flex-col">
-                  <p className="font-medium">{user?.email || "User"}</p>
-                </div>
+                <p className="font-medium">{user?.email || "User"}</p>
               </div>
 
               <button
                 onClick={logout}
-                className="flex items-center justify-center rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors"
+                className="rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors"
               >
                 Logout
               </button>
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button
-                className="text-[#101828]"
-                onClick={() => setMenuOpen(!menuOpen)}
-              >
-                <span className="material-symbols-outlined">menu</span>
-              </button>
-            </div>
+            <button
+              className="md:hidden text-[#101828]"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <span className="material-symbols-outlined">menu</span>
+            </button>
           </div>
         </div>
 
@@ -119,7 +113,7 @@ export default function Dashboard() {
                 Ticket Management
               </Link>
 
-              <div className="border-t border-[#D0D5DD]/40 my-3"></div>
+              <div className="border-t border-[#D0D5DD]/40 my-3" />
 
               <div className="flex items-center gap-3 px-3 py-2">
                 <div className="w-10 h-10 rounded-full bg-[#7F56D9] flex items-center justify-center font-bold text-white">
@@ -130,7 +124,7 @@ export default function Dashboard() {
 
               <button
                 onClick={logout}
-                className="w-full flex items-center justify-center rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors"
+                className="w-full rounded-2xl h-10 px-6 bg-[#7F56D9] text-white text-sm font-semibold shadow hover:bg-[#6E48C4] transition-colors"
               >
                 Logout
               </button>
@@ -139,18 +133,11 @@ export default function Dashboard() {
         )}
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-          </div>
-          {/* Floating circles */}
-          <div className="absolute z-0 top-1/4 left-24 w-20 h-20 md:w-24 md:h-24 bg-indigo-300 rounded-full opacity-30 animate-pulse"></div>
-          <div className="absolute  bottom-1/3 right-1/8 w-28 h-28 md:w-36 md:h-36 bg-indigo-500 rounded-full opacity-20 animate-[pulse_5s_infinite]"></div>
-          <div className="absolute top-1/2 left-1/5 w-10 h-10 md:w-12 md:h-12 bg-indigo-300 rounded-full opacity-40 animate-pulse"></div>
-          <div className="absolute top-20 right-10 md:right-40 w-16 h-16 md:w-20 md:h-20 bg-indigo-500 rounded-full opacity-20"></div>
-          <div className="absolute bottom-10 left-8 md:left-32 w-24 h-24 md:w-28 md:h-28 bg-indigo-300 rounded-full opacity-30"></div>
+          <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+
           {/* Ticket Stats */}
           {loading ? (
             <p>Loading tickets...</p>
@@ -164,17 +151,15 @@ export default function Dashboard() {
                   value: resolvedTickets,
                   icon: "task_alt",
                 },
-              ].map((card, index) => (
+              ].map((card) => (
                 <div
-                  key={index}
+                  key={card.title}
                   className="bg-white rounded-2xl p-6 shadow border border-[#D0D5DD]/30 flex flex-col gap-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="bg-[#7F56D9]/10 p-2 rounded-full">
-                      <span className="material-symbols-outlined text-[#7F56D9]">
-                        {card.icon}
-                      </span>
-                    </div>
+                    <span className="material-symbols-outlined bg-[#7F56D9]/10 p-2 rounded-full text-[#7F56D9]">
+                      {card.icon}
+                    </span>
                     <p className="text-lg font-medium">{card.title}</p>
                   </div>
                   <p className="text-4xl font-bold">{card.value}</p>
